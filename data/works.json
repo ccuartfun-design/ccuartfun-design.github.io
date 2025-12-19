@@ -1,0 +1,38 @@
+[
+  {
+    "id": "work-1",
+    "title": "春",
+    "image": "../src/img/image0.jpg",
+    "medium": "棉布、油彩、壓克力顏料",
+    "creator": "薛媛濃",
+    "grade": "哲學系",
+    "size": "80 x 120 cm",
+    "concept": "春天是萬物逐漸復甦的季節，以春天為形象創造出人形，並用鮮花點綴畫面，營造欣欣向榮的豐富感。",
+    "story": "Waiting...",
+    "contact": "IG:@ccu.art.fun"
+  },
+  {
+    "id": "work-2",
+    "title": "瑪奇瑪",
+    "image": "../src/img/image1.jpg",
+    "medium": "棉布、壓克力顏料",
+    "creator": "黃少綦",
+    "grade": "財法所",
+    "size": "90 x 90 cm",
+    "concept": "是鏈鋸人第一季中我很喜歡的壞女人，她的對於理想世界的野心與企圖非常明確，也為此付出實際行動，我很喜歡。",
+    "story": "因為支配惡魔的特性，她必須只能透過控制他人而活著，這也註定她成為一個悲情之人。瑪奇瑪不懂得如何與他人平等相處，但她卻渴望一個平等的擁抱。總之，瑪奇瑪真是令人印象深刻與著迷的女角。",
+    "contact": "Mail:ccuartfun@example.com"
+  },
+  {
+    "id": "work-3",
+    "title": "對小黃愛恨交加",
+    "image": "../src/img/image2.jpg",
+    "medium": "油畫、壓克力顏料、炭筆",
+    "creator": "陳芊妤",
+    "grade": "外文一",
+    "size": "?? x ?? cm",
+    "concept": "新生週爬坡爬到厭煩所以在二手版上跟某學姐買了小黃，買完才發現小黃根本沒辦法爬坡 ^_^ 時速 6 要我的命，完全被它可愛的外表騙了，請大家三思而後行不要跟我一樣衝動購物。",
+    "story": "Waiting...",
+    "contact": "IG:@ccu.art.fun"
+  }
+]

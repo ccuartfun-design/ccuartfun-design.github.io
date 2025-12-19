@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>美術社期末成果展 | CCU Art Fun</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style/main.css">
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="wrap">
+    <header>
+      <div class="logo">
+        <div class="logo-mark">A</div>
+        <div>
+          <div class="logo-name">CCU Art Fun</div>
+          <small class="logo-sub">美術社期末成果展</small>
+        </div>
+      </div>
+      <nav>
+        <a href="#gallery">作品導覽</a>
+        <a href="#map">資訊</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <span class="eyebrow">2025 · 學年末展 · Together We Color</span>
+      <h1>美術社期末成果展<br>「流動的色階」</h1>
+      <p>邀請你走進色彩與線條的流動，欣賞這一學期的實驗、草稿、完成品與未完成的勇氣。每一件作品都是同學們將靈感帶進現實的軌跡。</p>
+      <div class="chips">
+        <div class="chip">📍 圖書館二樓 </div>
+        <div class="chip">🗓️ 2025/12/26（五）- 2026/01/09（五） </div>
+        <div class="chip">🎟️ 免費入場 · 歡迎自由參觀</div>
+      </div>
+    </section>
+
+    <div class="section-title" id="gallery">
+      <h2>作品導覽</h2>
+    </div>
+    <div class="gallery-grid" id="galleryGrid"></div>
+
+    <div class="modal" id="modal">
+      <div class="modal-card">
+        <button class="modal-close" aria-label="close" id="modalClose">×</button>
+        <img id="modalImage" class="modal-image" alt="">
+        <button class="view-full-btn" id="viewFullBtn">觀看全幅作品</button>
+        <h3 id="modalTitle"></h3>
+        <div class="info-grid">
+          <div class="info-item"><strong>創作人</strong><span id="modalCreator"></span></div>
+          <div class="info-item"><strong>媒材</strong><span id="modalMedium"></span></div>
+          <div class="info-item"><strong>系級</strong><span id="modalGrade"></span></div>
+          <div class="info-item"><strong>尺寸</strong><span id="modalSize"></span></div>
+        </div>
+        <p id="modalConcept"></p>
+        <p id="modalStory"></p>
+        <p id="modalContact"></p>
+      </div>
+    </div>
+
+    <div class="section-title" id="map">
+      <h2>展覽資訊</h2>
+    </div>
+    <div class="map">
+      <div class="label">地點</div>
+      <p>中正大學 圖書館二樓</p>
+      <div class="label">聯絡</div>
+      <p>中正美術社 IG：ccu_colorfun_club</p>
+    </div>
+
+    <footer>
+      <div class="tagline">See you in the colors.</div>
+      <div>CCU Art Fun · 2025 學年末展 · 流動的色階</div>
+    </footer>
+  </div>
+  <div class="fullview" id="fullview">
+    <button class="fullview-close" id="fullviewClose">×</button>
+    <img id="fullviewImage" alt="">
+  </div>
+  <script src="../static/main.js"></script>
+</body>
+</html>
