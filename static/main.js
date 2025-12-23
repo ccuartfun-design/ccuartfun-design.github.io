@@ -177,6 +177,8 @@ function initPhotoWall() {
   let cycleId = null;
   let isVisible = true;
   let wallImages = [];
+  let readyImages = [];
+  let isPreloading = false;
   let changeRatio = 0;
   let intervalMs = 0;
 
@@ -189,7 +191,9 @@ function initPhotoWall() {
   }
 
   function setItemImage(item, images, fade) {
-    const src = pick(images);
+    const pool = readyImages.length ? readyImages : images;
+    const src = pick(pool);
+    if (!src) return;
     if (!fade) {
       item.style.setProperty('--img', `url("${src}")`);
       return;
@@ -223,6 +227,36 @@ function initPhotoWall() {
     item.style.zIndex = z;
     item.style.gridColumn = `span ${colSpan}`;
     item.style.gridRow = `span ${rowSpan}`;
+  }
+
+  function preloadImages(list) {
+    if (isPreloading) return;
+    isPreloading = true;
+    readyImages = [];
+    const queue = list.slice();
+    const concurrency = saveData || deviceMemory <= 4 ? 3 : 5;
+
+    function loadNext() {
+      if (!queue.length) return;
+      const src = queue.shift();
+      const img = new Image();
+      img.decoding = 'async';
+      img.onload = () => {
+        readyImages.push(src);
+        loadNext();
+      };
+      img.onerror = () => {
+        loadNext();
+      };
+      img.src = src;
+      if (img.decode) {
+        img.decode().catch(() => {});
+      }
+    }
+
+    for (let i = 0; i < concurrency; i += 1) {
+      loadNext();
+    }
   }
 
   function stopCycle() {
@@ -261,6 +295,7 @@ function initPhotoWall() {
     wall.innerHTML = '';
     items = [];
     wallImages = images;
+    preloadImages(wallImages);
     for (let i = 0; i < count; i += 1) {
       const item = document.createElement('span');
       item.className = 'photo-item';
