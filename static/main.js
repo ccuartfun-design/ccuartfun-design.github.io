@@ -167,6 +167,18 @@ function initLights() {
 function initPhotoWall() {
   const wall = document.getElementById('photoWall');
   if (!wall) return;
+  const wallSection = wall.closest('.photo-wall-section') || wall;
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isSmallScreen = window.matchMedia('(max-width: 640px)').matches;
+  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  const saveData = connection && connection.saveData;
+  const deviceMemory = navigator.deviceMemory || 4;
+  let items = [];
+  let cycleId = null;
+  let isVisible = true;
+  let wallImages = [];
+  let changeRatio = 0;
+  let intervalMs = 0;
 
   function rand(min, max) {
     return Math.random() * (max - min) + min;
@@ -213,33 +225,91 @@ function initPhotoWall() {
     item.style.gridRow = `span ${rowSpan}`;
   }
 
-  fetch('../data/first_page_images.json', { cache: 'no-store' })
-    .then((response) => (response.ok ? response.json() : []))
-    .then((images) => {
-      if (!Array.isArray(images) || !images.length) return;
-      const count = Math.min(40, images.length);
-      wall.innerHTML = '';
-      for (let i = 0; i < count; i += 1) {
-        const item = document.createElement('span');
-        item.className = 'photo-item';
-        setItemLayout(item);
-        setItemImage(item, images, false);
-        wall.appendChild(item);
+  function stopCycle() {
+    if (cycleId) {
+      clearInterval(cycleId);
+      cycleId = null;
+    }
+  }
+
+  function startCycle() {
+    if (cycleId || prefersReduced || changeRatio <= 0) return;
+    cycleId = window.setInterval(() => {
+      if (!isVisible) return;
+      const total = items.length;
+      if (!total) return;
+      const changeCount = Math.max(1, Math.round(total * changeRatio));
+      const picked = new Set();
+      while (picked.size < changeCount) {
+        picked.add(Math.floor(Math.random() * total));
       }
-      setInterval(() => {
-        const items = wall.querySelectorAll('.photo-item');
-        const total = items.length;
-        if (!total) return;
-        const changeCount = Math.max(1, Math.round(total * 0.2));
-        const indices = Array.from({ length: total }, (_, idx) => idx)
-          .sort(() => Math.random() - 0.5)
-          .slice(0, changeCount);
-        indices.forEach((idx) => setItemImage(items[idx], images, true));
-      }, 3000);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+      picked.forEach((idx) => setItemImage(items[idx], wallImages, true));
+    }, intervalMs);
+  }
+
+  function initWall(images) {
+    if (!Array.isArray(images) || !images.length) return;
+    const maxCount = prefersReduced || saveData
+      ? 18
+      : (deviceMemory <= 4 || isSmallScreen ? 24 : 36);
+    const count = Math.min(maxCount, images.length);
+    changeRatio = prefersReduced
+      ? 0
+      : (saveData || deviceMemory <= 4 || isSmallScreen ? 0.12 : 0.18);
+    intervalMs = saveData ? 7000 : 4500;
+
+    wall.innerHTML = '';
+    items = [];
+    wallImages = images;
+    for (let i = 0; i < count; i += 1) {
+      const item = document.createElement('span');
+      item.className = 'photo-item';
+      setItemLayout(item);
+      setItemImage(item, images, false);
+      wall.appendChild(item);
+      items.push(item);
+    }
+
+    startCycle();
+  }
+
+  function loadImages() {
+    fetch('../data/first_page_images.json', { cache: 'no-store' })
+      .then((response) => (response.ok ? response.json() : []))
+      .then(initWall)
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  const defer = window.requestIdleCallback
+    ? window.requestIdleCallback
+    : (fn) => window.setTimeout(fn, 60);
+  defer(loadImages);
+
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        isVisible = entries[0].isIntersecting;
+        if (!isVisible) {
+          stopCycle();
+        } else {
+          startCycle();
+        }
+      },
+      { rootMargin: '200px' }
+    );
+    observer.observe(wallSection);
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    isVisible = !document.hidden;
+    if (!isVisible) {
+      stopCycle();
+    } else {
+      startCycle();
+    }
+  });
 }
 function slugify(text) {
   return text
