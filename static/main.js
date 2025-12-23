@@ -179,6 +179,8 @@ function initPhotoWall() {
   let wallImages = [];
   let readyImages = [];
   let isPreloading = false;
+  const useBlobCache = true;
+  const blobCache = new Map();
   let changeRatio = 0;
   let intervalMs = 0;
 
@@ -239,6 +241,20 @@ function initPhotoWall() {
     function loadNext() {
       if (!queue.length) return;
       const src = queue.shift();
+      if (useBlobCache && !blobCache.has(src)) {
+        fetch(src, { cache: 'force-cache' })
+          .then((response) => (response.ok ? response.blob() : null))
+          .then((blob) => {
+            if (!blob) return;
+            const objectUrl = URL.createObjectURL(blob);
+            blobCache.set(src, objectUrl);
+            readyImages.push(objectUrl);
+          })
+          .catch(() => {})
+          .finally(loadNext);
+        return;
+      }
+
       const img = new Image();
       img.decoding = 'async';
       img.onload = () => {
@@ -344,6 +360,11 @@ function initPhotoWall() {
     } else {
       startCycle();
     }
+  });
+
+  window.addEventListener('beforeunload', () => {
+    blobCache.forEach((url) => URL.revokeObjectURL(url));
+    blobCache.clear();
   });
 }
 function slugify(text) {
