@@ -15,6 +15,23 @@ const fullview = document.getElementById('fullview');
 const fullviewImage = document.getElementById('fullviewImage');
 const fullviewClose = document.getElementById('fullviewClose');
 const dataUrl = '../data/works.json';
+const imageObserver = 'IntersectionObserver' in window
+  ? new IntersectionObserver(
+    (entries, observer) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const img = entry.target;
+        const src = img.dataset.src;
+        if (src) {
+          img.src = src;
+          img.removeAttribute('data-src');
+        }
+        observer.unobserve(img);
+      });
+    },
+    { rootMargin: '200px 0px', threshold: 0.01 }
+  )
+  : null;
 let currentImg = '';
 let initialId = '';
 const params = new URLSearchParams(window.location.search);
@@ -81,8 +98,8 @@ document.addEventListener('keyup', (event) => {
 function createCard(work) {
   const card = document.createElement('article');
   card.className = 'art-card';
-  card.style.setProperty('--card-img', `url('${work.image}')`);
   const cardId = work.id || slugify(work.title || '');
+  const thumbSrc = work.thumb || work.image;
   card.dataset.id = cardId;
   card.dataset.img = work.image;
   card.dataset.title = work.title;
@@ -94,6 +111,19 @@ function createCard(work) {
   card.dataset.story = work.story;
   card.dataset.contact = work.contact;
 
+  const img = document.createElement('img');
+  img.className = 'card-image';
+  img.alt = work.title || 'artwork';
+  img.decoding = 'async';
+  img.loading = 'lazy';
+  img.setAttribute('fetchpriority', 'low');
+  if (imageObserver) {
+    img.dataset.src = thumbSrc;
+    imageObserver.observe(img);
+  } else {
+    img.src = thumbSrc;
+  }
+
   const overlay = document.createElement('div');
   overlay.className = 'card-overlay';
 
@@ -103,6 +133,7 @@ function createCard(work) {
   const desc = document.createElement('p');
   desc.textContent = work.concept;
 
+  card.appendChild(img);
   overlay.appendChild(title);
   overlay.appendChild(desc);
   card.appendChild(overlay);
