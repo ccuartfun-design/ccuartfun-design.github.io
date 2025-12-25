@@ -34,12 +34,27 @@ const imageObserver = 'IntersectionObserver' in window
   : null;
 let currentImg = '';
 let initialId = '';
+let modalLoadId = 0;
+let fullviewLoadId = 0;
 const params = new URLSearchParams(window.location.search);
 initialId = params.get('id') || '';
 
 function openModal(card) {
   modalTitle.textContent = card.dataset.title || '';
   currentImg = card.dataset.img || '';
+  modalLoadId += 1;
+  const loadId = modalLoadId;
+  modalImage.classList.add('is-loading');
+  modalImage.removeAttribute('src');
+  modalImage.src = '';
+  modalImage.onload = () => {
+    if (loadId !== modalLoadId) return;
+    modalImage.classList.remove('is-loading');
+  };
+  modalImage.onerror = () => {
+    if (loadId !== modalLoadId) return;
+    modalImage.classList.remove('is-loading');
+  };
   modalImage.src = currentImg;
   modalImage.alt = card.dataset.title || 'artwork';
   modalCreator.textContent = card.dataset.creator || '-';
@@ -75,6 +90,19 @@ document.addEventListener('keyup', (event) => {
 
 function openFullview() {
   if (!currentImg) return;
+  fullviewLoadId += 1;
+  const loadId = fullviewLoadId;
+  fullviewImage.classList.add('is-loading');
+  fullviewImage.removeAttribute('src');
+  fullviewImage.src = '';
+  fullviewImage.onload = () => {
+    if (loadId !== fullviewLoadId) return;
+    fullviewImage.classList.remove('is-loading');
+  };
+  fullviewImage.onerror = () => {
+    if (loadId !== fullviewLoadId) return;
+    fullviewImage.classList.remove('is-loading');
+  };
   fullviewImage.src = currentImg;
   fullviewImage.alt = modalTitle.textContent || 'artwork';
   fullview.classList.add('active');

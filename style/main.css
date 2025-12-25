@@ -459,6 +459,7 @@ h1 {
   margin: 0 0 12px;
   border: 1px solid rgba(15, 23, 42, 0.08);
   cursor: zoom-in;
+  transition: opacity 0.2s ease;
 }
 
 .modal-image:hover {
@@ -534,6 +535,12 @@ h1 {
   border: 1px solid rgba(15, 23, 42, 0.14);
   box-shadow: 0 28px 60px rgba(15, 23, 42, 0.2);
   background: #ffffff;
+  transition: opacity 0.2s ease;
+}
+
+.modal-image.is-loading,
+.fullview img.is-loading {
+  opacity: 0;
 }
 
 .fullview-close {
