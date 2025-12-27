@@ -159,7 +159,7 @@ function createCard(work) {
   title.textContent = work.title;
 
   const desc = document.createElement('p');
-  desc.textContent = work.concept;
+  desc.textContent = truncateText(work.concept || '', 40);
 
   card.appendChild(img);
   overlay.appendChild(title);
@@ -168,6 +168,12 @@ function createCard(work) {
 
   card.addEventListener('click', () => openModal(card));
   return card;
+}
+
+function truncateText(text, maxChars) {
+  const chars = Array.from(text);
+  if (chars.length <= maxChars) return text;
+  return `${chars.slice(0, maxChars).join('')}...`;
 }
 
 function renderWorks(list) {
